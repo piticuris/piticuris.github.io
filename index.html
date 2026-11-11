@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>piticuris</title>
+<style>
+  html,body{height:100%;margin:0;background:#0e0f12;color:#d7d8d9;font-family:'Segoe UI',Arial,sans-serif}
+  #s{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;text-align:center;padding:1rem}
+  #s b{font-size:2rem;color:#fff}
+  .sp{width:38px;height:38px;border:4px solid #393b3d;border-top-color:#335fff;border-radius:50%;animation:r 1s linear infinite}
+  @keyframes r{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="s" style="display:none"><b>piticuris</b><div class="sp"></div><div id="m">Loading...</div></div>
+<script>
+/* This small file only asks YOUR server for the shop and shows it. The shop code is not stored here. */
+(function () {
+  var API = 'https://piticuris-server.onrender.com';   // <- the address of your Render server
+  var ALLOWED = ['piticuris.github.io'];   // the ONLY address where the shop is allowed to open
+  if (ALLOWED.indexOf(location.hostname) < 0) return;   // any other address: blank page, nothing happens
+  document.getElementById('s').style.display = 'flex';
+  var KEY = 'piticuris_page_cache', msg = document.getElementById('m');
+  function show(html) { document.open(); document.write(html); document.close(); }
+  function get() {
+    var c = new AbortController(), t = setTimeout(function () { c.abort(); }, 20000);
+    return fetch(API + '/api/page', { cache: 'no-store', signal: c.signal })
+      .then(function (r) { clearTimeout(t); if (!r.ok) throw 0; return r.text(); })
+      .then(function (h) { if (h.indexOf('piticuris-core') < 0) throw 0; return h; })
+      .catch(function () { clearTimeout(t); return null; });
+  }
+  (async function () {
+    var cached = null; try { cached = localStorage.getItem(KEY); } catch (e) {}
+    for (var i = 0; i < 8; i++) {
+      var html = await get();
+      if (html) { try { localStorage.setItem(KEY, html); } catch (e) {} show(html); return; }
+      if (cached) { show(cached); return; }
+      msg.textContent = 'Waking up the server... this can take up to a minute.';
+    }
+    msg.textContent = 'The shop is not available right now. Please try again in a few minutes.';
+  })();
+})();
+</script>
+</body>
+</html>
