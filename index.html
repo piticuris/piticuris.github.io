@@ -15,11 +15,11 @@
 <body>
 <div id="s" style="display:none"><b>piticuris</b><div class="sp"></div><div id="m">Loading...</div></div>
 <script>
-/* This small file only asks YOUR server for the shop and shows it. The shop code is not stored here. */
+
 (function () {
-  var API = 'https://piticuris-server.onrender.com';   // <- the address of your Render server
-  var ALLOWED = ['piticuris.github.io'];   // the ONLY address where the shop is allowed to open
-  if (ALLOWED.indexOf(location.hostname) < 0) return;   // any other address: blank page, nothing happens
+  var API = 'https://piticuris-server.onrender.com';  
+  var ALLOWED = ['piticuris.github.io'];   
+  if (ALLOWED.indexOf(location.hostname) < 0) return;   
   document.getElementById('s').style.display = 'flex';
   var KEY = 'piticuris_page_cache', msg = document.getElementById('m');
   function show(html) { document.open(); document.write(html); document.close(); }
